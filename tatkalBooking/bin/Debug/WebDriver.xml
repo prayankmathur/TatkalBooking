@@ -315,6 +315,49 @@
       <param name="keySequence">The sequence to test for file existence.</param>
       <returns>This method always returns <see langword="false" /> in this implementation.</returns>
     </member>
+    <member name="T:OpenQA.Selenium.DriverOptions">
+      <summary>
+            Base class for managing options specific to a browser driver.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.DriverOptions.AddAdditionalCapability(System.String,System.Object)">
+      <summary>
+            Provides a means to add additional capabilities not yet added as type safe options
+            for the specific browser driver.
+            </summary>
+      <param name="capabilityName">The name of the capability to add.</param>
+      <param name="capabilityValue">The value of the capability to add.</param>
+      <exception cref="T:System.ArgumentException">
+            thrown when attempting to add a capability for which there is already a type safe option, or
+            when <paramref name="capabilityName" /> is <see langword="null" /> or the empty string.
+            </exception>
+      <remarks>Calling <see cref="M:OpenQA.Selenium.DriverOptions.AddAdditionalCapability(System.String,System.Object)" />
+            where <paramref name="capabilityName" /> has already been added will overwrite the
+            existing value with the new value in <paramref name="capabilityValue" />.
+            </remarks>
+    </member>
+    <member name="M:OpenQA.Selenium.DriverOptions.ToCapabilities">
+      <summary>
+            Returns DesiredCapabilities for the specific browser driver with these
+            options included ascapabilities. This does not copy the options. Further
+            changes will be reflected in the returned capabilities.
+            </summary>
+      <returns>The DesiredCapabilities for browser driver with these options.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.DriverOptions.SetLoggingPreference(System.String,OpenQA.Selenium.LogLevel)">
+      <summary>
+            Sets the logging preferences for this driver.
+            </summary>
+      <param name="logType">The type of log for which to set the preference.
+            Known log types can be found in the <see cref="T:OpenQA.Selenium.LogType" /> class.</param>
+      <param name="logLevel">The <see cref="T:OpenQA.Selenium.LogLevel" /> value to which to set the log level.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.DriverOptions.GenerateLoggingPreferencesDictionary">
+      <summary>
+            Generates the logging preferences dictionary for transmission as a desired capability.
+            </summary>
+      <returns>The dictionary containing the logging preferences.</returns>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.ICommandServer">
       <summary>
             Provides a way to start a server that understands remote commands
@@ -799,42 +842,6 @@
       <param name="keyToRelease">The key value representing the key to release.</param>
       <remarks>The key value must be one of the values from the <see cref="T:OpenQA.Selenium.Keys" /> class.</remarks>
     </member>
-    <member name="T:OpenQA.Selenium.IllegalLocatorException">
-      <summary>
-            The exception that is thrown when an attempt is made to locate an item using invalid criteria.
-            </summary>
-    </member>
-    <member name="M:OpenQA.Selenium.IllegalLocatorException.#ctor">
-      <summary>
-            Initializes a new instance of the <see cref="T:OpenQA.Selenium.IllegalLocatorException" /> class.
-            </summary>
-    </member>
-    <member name="M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.String)">
-      <summary>
-            Initializes a new instance of the <see cref="T:OpenQA.Selenium.IllegalLocatorException" /> class with
-            a specified error message.
-            </summary>
-      <param name="message">The message that describes the error.</param>
-    </member>
-    <member name="M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.String,System.Exception)">
-      <summary>
-            Initializes a new instance of the <see cref="T:OpenQA.Selenium.IllegalLocatorException" /> class with
-            a specified error message and a reference to the inner exception that is the
-            cause of this exception.
-            </summary>
-      <param name="message">The error message that explains the reason for the exception.</param>
-      <param name="innerException">The exception that is the cause of the current exception,
-            or <see langword="null" /> if no inner exception is specified.</param>
-    </member>
-    <member name="M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-      <summary>
-            Initializes a new instance of the <see cref="T:OpenQA.Selenium.IllegalLocatorException" /> class with serialized data.
-            </summary>
-      <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized
-            object data about the exception being thrown.</param>
-      <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual
-            information about the source or destination.</param>
-    </member>
     <member name="T:OpenQA.Selenium.ILocatable">
       <summary>
             Defines the interface through which the user can discover where an element is on the screen.
@@ -850,6 +857,24 @@
       <summary>
             Gets the coordinates identifying the location of this element using
             various frames of reference.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.ILogs">
+      <summary>
+            Interface allowing handling of driver logs.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.ILogs.GetLog(System.String)">
+      <summary>
+            Gets the set of <see cref="T:OpenQA.Selenium.LogEntry" /> objects for a specified log.
+            </summary>
+      <param name="logKind">The log for which to retrieve the log entries.
+            Log types can be found in the <see cref="T:OpenQA.Selenium.LogType" /> class.</param>
+      <returns>The list of <see cref="T:OpenQA.Selenium.LogEntry" /> objects for the specified log.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.ILogs.AvailableLogTypes">
+      <summary>
+            Gets the list of available log types for this driver.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.IMouse">
@@ -1155,6 +1180,11 @@
             </summary>
       <remarks>"Currently-focused" is defined as the browser window having the window handle
             returned when IWebDriver.CurrentWindowHandle is called.</remarks>
+    </member>
+    <member name="P:OpenQA.Selenium.IOptions.Logs">
+      <summary>
+            Gets an object allowing the user to examing the logs for this driver instance.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.IRotatable">
       <summary>
@@ -1964,6 +1994,110 @@
     <member name="F:OpenQA.Selenium.Keys.Command">
       <summary>
             Represents the function key COMMAND.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.LogEntry">
+      <summary>
+            Represents an entry in a log from a driver instance.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.LogEntry.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.LogEntry" /> class.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.LogEntry.ToString">
+      <summary>
+            Returns a string that represents the current <see cref="T:OpenQA.Selenium.LogEntry" />.
+            </summary>
+      <returns>A string that represents the current <see cref="T:OpenQA.Selenium.LogEntry" />.</returns>
+    </member>
+    <member name="M:OpenQA.Selenium.LogEntry.FromDictionary(System.Collections.Generic.Dictionary{System.String,System.Object})">
+      <summary>
+            Creates a <see cref="T:OpenQA.Selenium.LogEntry" /> from a dictionary as deserialized from JSON.
+            </summary>
+      <param name="entryDictionary">The <see cref="T:System.Collections.Generic.Dictionary`2" /> from
+            which to create the <see cref="T:OpenQA.Selenium.LogEntry" />.</param>
+      <returns>A <see cref="T:OpenQA.Selenium.LogEntry" /> with the values in the dictionary.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.LogEntry.Timestamp">
+      <summary>
+            Gets the timestamp value of the log entry.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.LogEntry.Level">
+      <summary>
+            Gets the logging level of the log entry.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.LogEntry.Message">
+      <summary>
+            Gets the message of the log entry.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.LogLevel">
+      <summary>
+            Represents the levels of logging available to driver instances.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.All">
+      <summary>
+            Show all log messages.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.Debug">
+      <summary>
+            Show messages with information useful for debugging.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.Info">
+      <summary>
+            Show informational messages.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.Warning">
+      <summary>
+            Show messages corresponding to non-critical issues.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.Severe">
+      <summary>
+            Show messages corresponding to critical issues.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogLevel.Off">
+      <summary>
+            Show no log messages.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.LogType">
+      <summary>
+            Class containing names of common log types.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogType.Client">
+      <summary>
+            Log messages from the client language bindings.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogType.Driver">
+      <summary>
+            Logs from the current WebDriver instance.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogType.Browser">
+      <summary>
+            Logs from the browser.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogType.Server">
+      <summary>
+            Logs from the server.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.LogType.Profiler">
+      <summary>
+            Profiling logs.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.NoAlertPresentException">
@@ -2920,6 +3054,16 @@
             Gets an <see cref="T:OpenQA.Selenium.Html5.IApplicationCache" /> object for managing application cache.
             </summary>
     </member>
+    <member name="T:OpenQA.Selenium.Remote.IHasSessionId">
+      <summary>
+            Interface indicating the driver has a Session ID.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Remote.IHasSessionId.SessionId">
+      <summary>
+            Gets the session ID of the current session.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.RemoteWebDriver">
       <summary>
             Provides a way to use the driver through
@@ -2957,13 +3101,6 @@
             The default command timeout for HTTP requests in a RemoteWebDriver instance.
             </summary>
     </member>
-    <member name="M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.Remote.ICommandExecutor,OpenQA.Selenium.ICapabilities)">
-      <summary>
-            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.RemoteWebDriver" /> class
-            </summary>
-      <param name="commandExecutor">An <see cref="T:OpenQA.Selenium.Remote.ICommandExecutor" /> object which executes commands for the driver.</param>
-      <param name="desiredCapabilities">An <see cref="T:OpenQA.Selenium.ICapabilities" /> object containing the desired capabilities of the browser.</param>
-    </member>
     <member name="M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.ICapabilities)">
       <summary>
             Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.RemoteWebDriver" /> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
@@ -2984,6 +3121,13 @@
       <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
       <param name="desiredCapabilities">An <see cref="T:OpenQA.Selenium.ICapabilities" /> object containing the desired capabilities of the browser.</param>
       <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.RemoteWebDriver.#ctor(OpenQA.Selenium.Remote.ICommandExecutor,OpenQA.Selenium.ICapabilities)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.RemoteWebDriver" /> class
+            </summary>
+      <param name="commandExecutor">An <see cref="T:OpenQA.Selenium.Remote.ICommandExecutor" /> object which executes commands for the driver.</param>
+      <param name="desiredCapabilities">An <see cref="T:OpenQA.Selenium.ICapabilities" /> object containing the desired capabilities of the browser.</param>
     </member>
     <member name="M:OpenQA.Selenium.Remote.RemoteWebDriver.FindElement(OpenQA.Selenium.By)">
       <summary>
@@ -3460,6 +3604,11 @@
             sequences of keystrokes representing file paths and names.
             </summary>
     </member>
+    <member name="P:OpenQA.Selenium.Remote.RemoteWebDriver.SessionId">
+      <summary>
+            Gets the <see cref="P:OpenQA.Selenium.Remote.RemoteWebDriver.SessionId" /> for the current session of this driver.
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.Remote.RemoteWebDriver.IsSpecificationCompliant">
       <summary>
             Gets a value indicating whether or not the driver is compliant with the W3C WebDriver specification.
@@ -3468,11 +3617,6 @@
     <member name="P:OpenQA.Selenium.Remote.RemoteWebDriver.CommandExecutor">
       <summary>
             Gets the <see cref="T:OpenQA.Selenium.Remote.ICommandExecutor" /> which executes commands for this driver.
-            </summary>
-    </member>
-    <member name="P:OpenQA.Selenium.Remote.RemoteWebDriver.SessionId">
-      <summary>
-            Gets the <see cref="P:OpenQA.Selenium.Remote.RemoteWebDriver.SessionId" /> for the current session of this driver.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.Chrome.ChromeDriver">
@@ -3618,6 +3762,12 @@
       <param name="driverExecutableFileName">The name of the ChromeDriver executable file.</param>
       <returns>A ChromeDriverService using a random port.</returns>
     </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeDriverService.ChromeDriverServiceFileName">
+      <summary>
+            Returns the Chrome driver filename for the currently running platform
+            </summary>
+      <returns>The file name of the Chrome driver service executable.</returns>
+    </member>
     <member name="P:OpenQA.Selenium.Chrome.ChromeDriverService.LogPath">
       <summary>
             Gets or sets the location of the log file written to by the ChromeDriver executable.
@@ -3644,9 +3794,64 @@
             Defaults to <see langword="false" />.
             </summary>
     </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeDriverService.WhitelistedIPAddresses">
+      <summary>
+            Gets or sets the comma-delimited list of IP addresses that are approved to
+            connect to this instance of the Chrome driver. Defaults to an empty string,
+            which means only the local loopback address can connect.
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.Chrome.ChromeDriverService.CommandLineArguments">
       <summary>
             Gets the command-line arguments for the driver service.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings">
+      <summary>
+            Represents the type-safe options for setting settings for emulating a
+            mobile device in the Chrome browser.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings" /> class.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.#ctor(System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings" /> class.
+            </summary>
+      <param name="userAgent">The user agent string to be used by the browser when emulating
+            a mobile device.</param>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.UserAgent">
+      <summary>
+            Gets or sets the user agent string to be used by the browser when emulating
+            a mobile device.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.Width">
+      <summary>
+            Gets or sets the width in pixels to be used by the browser when emulating
+            a mobile device.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.Height">
+      <summary>
+            Gets or sets the height in pixels to be used by the browser when emulating
+            a mobile device.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.PixelRatio">
+      <summary>
+            Gets or sets the pixel ratio to be used by the browser when emulating
+            a mobile device.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.EnableTouchEvents">
+      <summary>
+            Gets or sets a value indicating whether touch events should be enabled by
+            the browser when emulating a mobile device. Defaults to <see langword="true" />.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.Chrome.ChromeOptions">
@@ -3783,6 +3988,51 @@
       <param name="preferenceName">The name of the preference to set.</param>
       <param name="preferenceValue">The value of the preference to set.</param>
     </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.EnableMobileEmulation(System.String)">
+      <summary>
+            Allows the Chrome browser to emulate a mobile device.
+            </summary>
+      <param name="deviceName">The name of the device to emulate. The device name must be a
+            valid device name from the Chrome DevTools Emulation panel.</param>
+      <remarks>Specifying an invalid device name will not throw an exeption, but
+            will generate an error in Chrome when the driver starts. To unset mobile
+            emulation, call this method with <see langword="null" /> as the argument.</remarks>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.EnableMobileEmulation(OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings)">
+      <summary>
+            Allows the Chrome browser to emulate a mobile device.
+            </summary>
+      <param name="deviceSettings">The <see cref="T:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings" />
+            object containing the settings of the device to emulate.</param>
+      <exception cref="T:System.ArgumentException">Thrown if the device settings option does
+            not have a user agent string set.</exception>
+      <remarks>Specifying an invalid device name will not throw an exeption, but
+            will generate an error in Chrome when the driver starts. To unset mobile
+            emulation, call this method with <see langword="null" /> as the argument.</remarks>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.AddWindowType(System.String)">
+      <summary>
+            Adds a type of window that will be listed in the list of window handles
+            returned by the Chrome driver.
+            </summary>
+      <param name="windowType">The name of the window type to add.</param>
+      <remarks>This method can be used to allow the driver to access {webview}
+            elements by adding "webview" as a window type.</remarks>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.AddWindowTypes(System.String[])">
+      <summary>
+            Adds a list of window types that will be listed in the list of window handles
+            returned by the Chrome driver.
+            </summary>
+      <param name="windowTypesToAdd">An array of window types to add.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.AddWindowTypes(System.Collections.Generic.IEnumerable{System.String})">
+      <summary>
+            Adds a list of window types that will be listed in the list of window handles
+            returned by the Chrome driver.
+            </summary>
+      <param name="windowTypesToAdd">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of window types to add.</param>
+    </member>
     <member name="M:OpenQA.Selenium.Chrome.ChromeOptions.AddAdditionalCapability(System.String,System.Object)">
       <summary>
             Provides a means to add additional capabilities not yet added as type safe options
@@ -3860,6 +4110,67 @@
     <member name="P:OpenQA.Selenium.Chrome.ChromeOptions.MinidumpPath">
       <summary>
             Gets or sets the directory in which to store minidump files.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromeOptions.PerformanceLoggingPreferences">
+      <summary>
+            Gets or sets the performance logging preferences for the driver.
+            </summary>
+    </member>
+    <member name="T:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences">
+      <summary>
+            Represents the type-safe options for setting preferences for performance
+            logging in the Chrome browser.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.AddTracingCategory(System.String)">
+      <summary>
+            Adds a single category to the list of Chrome tracing categories for which events should be collected.
+            </summary>
+      <param name="category">The category to add.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.AddTracingCategories(System.String[])">
+      <summary>
+            Adds categories to the list of Chrome tracing categories for which events should be collected.
+            </summary>
+      <param name="categoriesToAdd">An array of categories to add.</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.AddTracingCategories(System.Collections.Generic.IEnumerable{System.String})">
+      <summary>
+            Adds categories to the list of Chrome tracing categories for which events should be collected.
+            </summary>
+      <param name="categoriesToAdd">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> object of categories to add.</param>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.IsCollectingNetworkEvents">
+      <summary>
+            Gets or sets a value indicating whether Chrome will collect events from the Network domain.
+            Defaults to <see langword="true" />.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.IsCollectingPageEvents">
+      <summary>
+            Gets or sets a value indicating whether Chrome will collect events from the Page domain.
+            Defaults to <see langword="true" />.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.IsCollectingTimelineEvents">
+      <summary>
+            Gets or sets a value indicating whether Chrome will collect events from the Timeline domain.
+            Defaults to <see langword="true" />, but is set to <see langword="false" /> when tracing
+            is enabled by adding one or more tracing categories.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.BufferUsageReportingInterval">
+      <summary>
+            Gets or sets the interval between Chrome DevTools trace buffer usage events.
+            Defaults to 1000 milliseconds.
+            </summary>
+      <exception cref="T:System.ArgumentException">Thrown when an attempt is made to set
+            the value to a time span of less tnan or equal to zero milliseconds.</exception>
+    </member>
+    <member name="P:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.TracingCategories">
+      <summary>
+            Gets a comma-separated list of the categories for which tracing is enabled.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.Internal.IWrapsDriver">
@@ -4998,6 +5309,21 @@
             </code>
       </example>
     </member>
+    <member name="M:OpenQA.Selenium.Firefox.FirefoxOptions.AddAdditionalCapability(System.String,System.Object)">
+      <summary>
+            Provides a means to add additional capabilities not yet added as type safe options
+            for the Firefox driver.
+            </summary>
+      <param name="capabilityName">The name of the capability to add.</param>
+      <param name="capabilityValue">The value of the capability to add.</param>
+      <exception cref="T:System.ArgumentException">
+            thrown when attempting to add a capability for which there is already a type safe option, or
+            when <paramref name="capabilityName" /> is <see langword="null" /> or the empty string.
+            </exception>
+      <remarks>For the moment, this method has no effect for the Firefox driver, as use
+            of the FirefoxOptions class is only used as a marker for Marionette. This will
+            change in the future.</remarks>
+    </member>
     <member name="M:OpenQA.Selenium.Firefox.FirefoxOptions.ToCapabilities">
       <summary>
             Returns DesiredCapabilities for Firefox with these options included as
@@ -5872,6 +6198,13 @@
             be set to a valid directory.
             </remarks>
     </member>
+    <member name="P:OpenQA.Selenium.IE.InternetExplorerDriverService.WhitelistedIPAddresses">
+      <summary>
+            Gets or sets the comma-delimited list of IP addresses that are approved to
+            connect to this instance of the IEDriverServer. Defaults to an empty string,
+            which means only the local loopback address can connect.
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.IE.InternetExplorerDriverService.CommandLineArguments">
       <summary>
             Gets the command-line arguments for the driver service.
@@ -6052,6 +6385,12 @@
             of Internet Explorer.
             </summary>
     </member>
+    <member name="P:OpenQA.Selenium.IE.InternetExplorerOptions.FileUploadDialogTimeout">
+      <summary>
+            Gets or sets the amount of time the driver will attempt to look for the file selection
+            dialog when attempting to upload a file.
+            </summary>
+    </member>
     <member name="P:OpenQA.Selenium.IE.InternetExplorerOptions.ForceCreateProcessApi">
       <summary>
             Gets or sets a value indicating whether to force the use of the Windows CreateProcess API
@@ -6101,6 +6440,12 @@
             before launching the browser. When set to <see langword="true" />, clears the
             system cache for all instances of Internet Explorer, even those already running
             when the driven instance is launched. Defaults to <see langword="false" />.
+            </summary>
+    </member>
+    <member name="P:OpenQA.Selenium.IE.InternetExplorerOptions.EnableFullPageScreenshot">
+      <summary>
+            Gets or sets a value indicating whether to enable full-page screenshots for
+            the IE driver. Defaults to <see langword="true" />.
             </summary>
     </member>
     <member name="T:OpenQA.Selenium.IE.InternetExplorerWebElement">
@@ -7203,12 +7548,12 @@
     </member>
     <member name="P:System.IO.Compression.ZipStorer.EncodeUtf8">
       <summary>
-            Gets or sets a value indicating whether file names and comments should be encoded using UTF-8.
+            Gets a value indicating whether file names and comments should be encoded using UTF-8.
             </summary>
     </member>
     <member name="P:System.IO.Compression.ZipStorer.ForceDeflating">
       <summary>
-            Gets or sets a value indicating whether to force using the deflate algorithm,
+            Gets a value indicating whether to force using the deflate algorithm,
             even if doing so inflates the stored file.
             </summary>
     </member>
@@ -8124,6 +8469,21 @@
             Capability name used to indicate the page load strategy for the browser.
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.CapabilityType.LoggingPreferences">
+      <summary>
+            Capability name used to indicate the logging preferences for the session.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.CapabilityType.DisableOverlappedElementCheck">
+      <summary>
+            Capability name used to disable the check for overlapping elements.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.CapabilityType.EnableProfiling">
+      <summary>
+            Capability name used to enable the profiling log for the session.
+            </summary>
+    </member>
     <member name="F:OpenQA.Selenium.Remote.CapabilityType.SupportsLocationContext">
       <summary>
             Capability name used to indicate whether the driver supports geolocation context.
@@ -8965,6 +9325,16 @@
             Represents the GetSessionStorageSize command.
             </summary>
     </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetAvailableLogTypes">
+      <summary>
+            Represents the GetAvailableLogTypes command.
+            </summary>
+    </member>
+    <member name="F:OpenQA.Selenium.Remote.DriverCommand.GetLog">
+      <summary>
+            Represents the GetLog command.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.DriverServiceCommandExecutor">
       <summary>
             Provides a mechanism to execute commands on the browser
@@ -9319,6 +9689,30 @@
             Gets or sets a value indicating the physical location of the browser.
             </summary>
     </member>
+    <member name="T:OpenQA.Selenium.Remote.RemoteLogs">
+      <summary>
+            Provides a mechanism for examining logs for the driver during the test.
+            </summary>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.RemoteLogs.#ctor(OpenQA.Selenium.Remote.RemoteWebDriver)">
+      <summary>
+            Initializes a new instance of the <see cref="T:OpenQA.Selenium.Remote.RemoteLogs" /> class.
+            </summary>
+      <param name="driver">Instance of the driver currently in use</param>
+    </member>
+    <member name="M:OpenQA.Selenium.Remote.RemoteLogs.GetLog(System.String)">
+      <summary>
+            Gets the set of <see cref="T:OpenQA.Selenium.LogEntry" /> objects for a specified log.
+            </summary>
+      <param name="logKind">The log for which to retrieve the log entries.
+            Log types can be found in the <see cref="T:OpenQA.Selenium.LogType" /> class.</param>
+      <returns>The list of <see cref="T:OpenQA.Selenium.LogEntry" /> objects for the specified log.</returns>
+    </member>
+    <member name="P:OpenQA.Selenium.Remote.RemoteLogs.AvailableLogTypes">
+      <summary>
+            Gets the list of available log types for this driver.
+            </summary>
+    </member>
     <member name="T:OpenQA.Selenium.Remote.RemoteMouse">
       <summary>
             Defines the interface through which the user can execute advanced mouse interactions.
@@ -9440,6 +9834,11 @@
             </summary>
       <remarks>"Currently-focused" is defined as the browser window having the window handle
             returned when IWebDriver.CurrentWindowHandle is called.</remarks>
+    </member>
+    <member name="P:OpenQA.Selenium.Remote.RemoteOptions.Logs">
+      <summary>
+            Gets an object allowing the user to examine the logs of the current driver instance.
+            </summary>
     </member>
     <member name="T:OpenQA.Selenium.Remote.RemoteSessionStorage">
       <summary>

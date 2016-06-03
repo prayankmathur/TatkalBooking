@@ -19,4 +19,3 @@ C:\Users\bigdaddy\Desktop\TatkalBooking\tatkalBooking\bin\Debug\WebDriver.Suppor
 C:\Users\bigdaddy\Desktop\TatkalBooking\tatkalBooking\bin\Debug\WebDriver.xml
 C:\Users\bigdaddy\Desktop\TatkalBooking\tatkalBooking\bin\Debug\WebDriver.Support.xml
 C:\Users\bigdaddy\Desktop\TatkalBooking\tatkalBooking\obj\Debug\tatkalBooking.csprojResolveAssemblyReference.cache
-C:\Users\bigdaddy\Documents\Visual Studio 2015\Projects\TatkalBooking\tatkalBooking\obj\Debug\tatkalBooking.csprojResolveAssemblyReference.cache

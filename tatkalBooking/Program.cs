@@ -26,17 +26,12 @@ namespace tatkalBooking
         static string PassengerBerthPreference = ConfigurationManager.AppSettings["PassengerBerthPreference"];
         static string FoodChoice = ConfigurationManager.AppSettings["FoodChoice"];
         static string BoardingStation = ConfigurationManager.AppSettings["BoardingStation"];
-        static string CardTypeString = ConfigurationManager.AppSettings["CardType"];
-        static string cardNum1 = ConfigurationManager.AppSettings["CardNum1"];
-        static string cardNum2 = ConfigurationManager.AppSettings["CardNum2"];
-        static string cardNum3 = ConfigurationManager.AppSettings["CardNum3"];
-        static string cardNum4 = ConfigurationManager.AppSettings["CardNum4"];
-        static string cardExpiryMonth = ConfigurationManager.AppSettings["CardExpiryMonth"];
-        static string cardExpiryYear = ConfigurationManager.AppSettings["CardExpiryYear"];
-        static string nameOnCard = ConfigurationManager.AppSettings["NameOnCard"];
-        static string cvv = ConfigurationManager.AppSettings["CVV"];
-        static string atmPin = ConfigurationManager.AppSettings["AtmPin"];
         static string PassengerMobileNumber = ConfigurationManager.AppSettings["PassengerMobileNumber"];
+        static string debitCardNumber = ConfigurationManager.AppSettings["DebitCardNumber"];
+        static string debitCardMonth = ConfigurationManager.AppSettings["DebitCardMonth"];
+        static string debitCardYear = ConfigurationManager.AppSettings["DebitCardYear"];
+        static string nameOnCard = ConfigurationManager.AppSettings["NameOnCard"];
+        static string atmPin = ConfigurationManager.AppSettings["AtmPin"];
 
         static void Main(string[] args)
         {
@@ -55,39 +50,40 @@ namespace tatkalBooking
         }
         static void EnterCardDetails(ChromeDriver driver)
         {
-            IWebElement CardType = driver.FindElementByName("CardTypeSelectBox");
-            CardType.SendKeys(CardTypeString);
+            while(true)
+            {
+                IWebElement captcha = null;
+                try
+                {
+                    captcha = driver.FindElementById("passline");
+                }
+                catch(Exception e)
+                {
+                    break;
+                }
 
-            IWebElement CardNum1 = driver.FindElementByName("CardNum1");
-            CardNum1.SendKeys(cardNum1);
+                IWebElement CardNumber = driver.FindElementById("debitCardNumber");
+                CardNumber.SendKeys(debitCardNumber);
 
-            IWebElement CardNum2 = driver.FindElementByName("CardNum2");
-            CardNum2.SendKeys(cardNum2);
+                IWebElement CardExpiryMonth = driver.FindElementByName("debiMonth");
+                CardExpiryMonth.SendKeys(debitCardMonth);
 
-            IWebElement CardNum3 = driver.FindElementByName("CardNum3");
-            CardNum3.SendKeys(cardNum3);
+                IWebElement CardExpiryYear = driver.FindElementByName("debiYear");
+                CardExpiryYear.SendKeys(debitCardYear);
 
-            IWebElement CardNum4 = driver.FindElementByName("CardNum4");
-            CardNum4.SendKeys(cardNum4);
+                IWebElement NameOnCard = driver.FindElementByName("debitCardholderName");
+                NameOnCard.SendKeys(nameOnCard);
 
-            IWebElement CardExpiryMonth = driver.FindElementByName("ExpDtMon");
-            CardExpiryMonth.SendKeys(cardExpiryMonth);
+                IWebElement AtmPin = driver.FindElementById("cardPin");
+                AtmPin.SendKeys(atmPin);
 
-            IWebElement CardExpiryYear = driver.FindElementByName("ExpDtYr");
-            CardExpiryYear.SendKeys(cardExpiryYear);
+                Console.WriteLine("Enter Captcha");
+                string Captcha = Console.ReadLine();
+                captcha.SendKeys(Captcha);
 
-            IWebElement CvvNum = driver.FindElementByName("CVVNum");
-            CvvNum.SendKeys(cvv);
-
-            IWebElement NameOnCard = driver.FindElementByName("NameOnCard");
-            NameOnCard.SendKeys(nameOnCard);
-
-            IWebElement AtmPin = driver.FindElementById("ATMPIN");
-            AtmPin.SendKeys(atmPin);
-
-            IWebElement Pay = driver.FindElementByName("btnPay");
-            Pay.Click();
-
+                IWebElement Pay = driver.FindElementByName("proceed");
+                Pay.Click();
+            }
         }
         static void MakePayment(ChromeDriver driver)
         {
@@ -96,8 +92,8 @@ namespace tatkalBooking
                 
             debitCard.Click();
 
-            IWebElement iciciBank = driver.FindElementByXPath("//*[@id=\"DEBIT_CARD\" and @value=\"41\" and @type=\"radio\"]");
-            iciciBank.Click();
+            IWebElement sbiBank = driver.FindElementByXPath("//*[@id=\"DEBIT_CARD\" and @value=\"3\" and @type=\"radio\"]");
+            sbiBank.Click();
 
             IWebElement makePayment = driver.FindElementById("validate");
             makePayment.Click();
@@ -151,7 +147,7 @@ namespace tatkalBooking
                 Console.WriteLine("Enter Captcha");
                 string captcha = Console.ReadLine();
 
-                IWebElement Captcha = driver.FindElementById("j_captcha");
+                IWebElement Captcha = driver.FindElementById("nlpAnswer");
                 Captcha.SendKeys(captcha);
 
                 IWebElement next = driver.FindElementById("validate");
@@ -169,7 +165,7 @@ namespace tatkalBooking
 
                 try
                 {
-                    Captcha = driver.FindElementById("j_captcha");
+                    Captcha = driver.FindElementById("nlpAnswer");
                     continue;
                 }
                 catch(Exception e)
@@ -208,7 +204,7 @@ namespace tatkalBooking
                             IWebElement bookNowForm = driver.FindElementById("avlAndFareForm");
 
                             WaitForElementPresentInWebElement(bookNowForm , By.Id("c1"));
-                            IWebElement bookNowColumn = bookNowForm.FindElement(By.Id("c1"));
+                    //        IWebElement bookNowColumn = bookNowForm.FindElement(By.Id("c1"));
                             IWebElement bookNowDivColumn = bookNowForm.FindElement(By.XPath("//*[@id=\"c1\"]/div[1]/div[2]"));
 
                             string bookNowIdXpath = "table/tbody/tr[2]/td[" + GetColumnNumberOfTrainAvailabilty(bookNowDivColumn) + "]/a";
